@@ -1,0 +1,90 @@
+body {
+  background: #2d343d;
+}
+
+label {
+  cursor:pointer
+}
+#form-switch {
+  display:none
+}
+#signup-form {
+  display:none
+}
+#form-switch:checked~#signup-form {
+  display:block
+}
+#form-switch:checked~#login-form {
+  display:none
+}
+
+.login, .signup {
+  margin: 20px auto;
+  width: 300px;
+  padding: 30px 25px;
+  background: white;
+  border: 1px solid #c4c4c4;
+}
+
+h1.login-title, h1.signup-title{
+  margin: -28px -25px 25px;
+  padding: 15px 25px;
+  line-height: 30px;
+  font-size: 25px;
+  font-weight: 300;
+  color: #ADADAD;
+  text-align:center;
+  background: #f7f7f7;
+ 
+}
+
+.login-input, form.signup input, form.signup select {
+  width: 285px;
+  height: 50px;
+  margin-bottom: 25px;
+  padding-left:10px;
+  font-size: 15px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.form-item {
+  height: 60px;
+  color: #ADADAD;
+  margin-bottom: 25px;
+}
+form.signup input {
+ height: 40px; 
+}
+
+.login-input:focus, form.signup input:focus {
+    border-color:#6e8095;
+    outline: none;
+  }
+.login-btn, .signup-btn {
+  width: 100%;
+  height: 50px;
+  padding: 0;
+  font-size: 20px;
+  color: #fff;
+  text-align: center;
+  background: #f0776c;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer; 
+  outline:0;
+}
+
+.login-signup-switch{
+  text-align:center;
+  margin-bottom:0px;
+  color: #55A;
+  text-decoration:none;
+  font-size:13px;
+}
+.login-signup-switch a{
+ text-decoration:none; 
+ color: #55A;
+}
+
+
