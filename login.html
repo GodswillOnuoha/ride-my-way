@@ -10,14 +10,14 @@
 
   </head>
   <body> 
-  <nav class="navbar">
-       <div class="logo">
-          <h2>Ride My Way</h2>
-       </div>
-       <a href="login.html">Login/Sign Up</a>
-       <a href="#">About</a>
-       <a href="index.html">Home</a>
-    </nav>
+      <nav class="navbar">
+          <div class="logo">
+             <h2> <a href="index.html">Ride My Way </a></h2>
+          </div>
+          <div class="navbar-link">
+           <a href="login.html">Login/Sign Up</a>
+          </div>
+       </nav>
 
     <div class="main_wrapper">
          <!-- login section -->
@@ -25,7 +25,7 @@
       <input type='checkbox' id='form-switch'>
       <form class="login form" id="login-form" action="" method='post'>
         <h1 class="title">User Login</h1>
-        <input type="text"  placeholder="Email Adress" autofocus required>
+        <input type="text"  placeholder="Email Address" autofocus required>
         <input type="password" placeholder="Password" required>
         <button type="submit" class="submit-btn">Login</button>
         <p class="login-signup-switch"><a href="#">Forgot Password?</a></p>
@@ -39,15 +39,6 @@
             <div class="form-item"> Last Name <input type="text"  placeholder="last name" id="lname"></div>
             <div class="form-item"> Username <input type="text" placeholder="Username" required></div>
             <div class="form-item"> Email <input type="email" placeholder="Email" required></div>
-            <div class="form-item"> Phone Number<input type="phone" placeholder="phone number" id="phone" required></div>
-            <div class="form-item"> Street and City<input type="text" placeholder="street and city" id="street" required></div>
-            <div class="form-item"> State <select>
-              <option value="" disabled selected>Select state</option>
-              <option value=1>Abia</option>
-              <option value=2>Adamawa</option>
-              <option value=3>Lagos</option>
-              <option value=4>Abuja</option>
-            </select> </div>
             <div class="form-item"> Password <input type="password" placeholder="Password" required></div>
             <div class="form-item"> Re Password <input type="password" placeholder="Re Password" required></div>
             <button type="submit" class="submit-btn">Signup</button>

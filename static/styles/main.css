@@ -48,7 +48,7 @@ footer p{
 }
 
 /* Links inside the navbar */
-.navbar a {
+.navbar-link a {
     float: right;
     display: block;
     color: #f2f2f2;
@@ -56,10 +56,12 @@ footer p{
     padding: 14px 16px;
     text-decoration: none;
 }
-
-/* Change background on mouse-over */
-.navbar a:hover {
-    background: #ddd;
+.navbar-link {
+  height: 100%;
+  padding-top: 10px;
+}
+.navbar-link a:hover {
+    background: rgba(200, 200, 235, 0.6);
     color: black;
 }
 
@@ -68,40 +70,46 @@ footer p{
   height: 100%;
   line-height: 70px;
 }
+
+.logo a, .logo a:visited, .logo a:active, :hover{
+  text-decoration: none;
+}
+
 .logo h2 {
   margin: 0;
   padding: 0;
-  color: rgb(29, 162, 193);
+  color: #21f3f9;
 }
 
-.container {
+#overlay {
   display: flex;
-  align-items: center;
   justify-content: center;
   height: 100%;
 }
 
-.btn {
+#overlay_pill {
   font-size: 25px;
   width: 50%;
   height: 100%;
   display: flex;
-  justify-content: space-around;
-  align-items: center;
 }
 
-.btn a {
+#overlay_pill a {
   text-decoration: none;
+  border-radius: 20px;
+  display: block;
+  line-height: 60px;
   color: rgb(247, 248, 249);
   width: 240px;
   height: 60px;
   text-align: center;
-  border:3px solid rgb(247, 248, 249);
-  border-radius: 20px;
+  border:2px solid white;
+  background: rgba(31, 144, 195, 0.5);
   margin: 300px auto;
-  display: block;
-  line-height: 60px;
-  background: rgba(29, 162, 193, 0.6);
+}
+
+#overlay_pill a:hover{
+  background: rgba(200, 144, 35, 0.5);
 }
 
 
@@ -123,7 +131,7 @@ label {
 
 .form{
   margin: 20px auto;
-  width: 300px;
+  width: 420px;
   padding: 30px 25px;
   background: white;
   border: 1px solid #c4c4c4;
