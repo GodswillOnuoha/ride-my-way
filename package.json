@@ -4,7 +4,8 @@
   "description": "a simple carpooling app",
   "main": "server/app.js",
   "scripts": {
-    "start": "node server/app.js"
+    "start": "node server/app.js",
+    "test": "mocha server/test"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   },
   "homepage": "https://github.com/ozezzy/Ride_my_way#readme",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "mocha": "^5.2.0"
   }
 }
