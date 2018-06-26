@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/ozezzy/Ride_my_way/issues"
   },
-  "homepage": "https://github.com/ozezzy/Ride_my_way#readme"
+  "homepage": "https://github.com/ozezzy/Ride_my_way#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
 }

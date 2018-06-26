@@ -1,12 +1,13 @@
 var express = require("express");
-var bodyParser = require("body-parser");
-var path = require("path");
-var expressValidator = require('express-validator')
+// var bodyParser = require("body-parser");
+// var path = require("path");
+// var expressValidator = require('express-validator')
 
+var app = express();
 
-//Body Parser Midleware
-app.use(bodyParser.urlencoded());
-app.use(bodyParser.json());
+// //Body Parser Midleware
+// app.use(bodyParser.urlencoded());
+// app.use(bodyParser.json());
 
 
 //Global variable
@@ -14,6 +15,8 @@ app.use(function(req, res, next){
 	res.locals.errors = null;
 	next();
 })
+
+app.get('/', (req, res) => res.send('Hello World!'))
 
 app.get('/rides', function(req, res){
 	// find everything in rides and show here
