@@ -1,0 +1,27 @@
+{
+  "name": "ride_my_way",
+  "version": "1.0.0",
+  "description": "a simple carpooling app",
+  "main": "server/app.js",
+  "scripts": {
+    "start": "node server/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ozezzy/Ride_my_way.git"
+  },
+  "keywords": [
+    "car",
+    "sharing",
+    "carpooling"
+  ],
+  "author": "ozezzy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ozezzy/Ride_my_way/issues"
+  },
+  "homepage": "https://github.com/ozezzy/Ride_my_way#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
