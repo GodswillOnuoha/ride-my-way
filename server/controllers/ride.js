@@ -7,7 +7,7 @@ const getAllRides = (req, res) => {
   const rides = db.getAllRides();
   res.status(200).json({
     message: 'success',
-    Rides: rides,
+    rides,
   });
 };
 
