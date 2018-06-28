@@ -1,12 +1,12 @@
-var assert = require('assert');
-require('../app.js');
+import assert from 'assert';
+import '../app';
 
-describe('Basic Mocha String Test', function () {
- it('should return number of charachters in a string', function () {
-        assert.equal("Hello".length, 5);
-    });
+describe('Basic Mocha String Test', () => {
+  it('should return number of charachters in a string', () => {
+    assert.equal('Hello'.length, 5);
+  });
 
- it('should return first charachter of the string', function () {
-        assert.equal("Hello".charAt(0), 'H');
-    });
+  it('should return first charachter of the string', () => {
+    assert.equal('Hello'.charAt(0), 'H');
+  });
 });
