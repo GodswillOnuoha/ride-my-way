@@ -1,6 +1,6 @@
 # Ride_my_way
 
-![Build Status](https://travis-ci.org/ozezzy/Ride_my_way.svg?branch=develop) [![Maintainability](https://api.codeclimate.com/v1/badges/7ec10445c08aa4b8f087/maintainability)](https://codeclimate.com/github/ozezzy/Ride_my_way/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/7ec10445c08aa4b8f087/test_coverage)](https://codeclimate.com/github/ozezzy/Ride_my_way/test_coverage) [![Coverage Status](https://coveralls.io/repos/github/ozezzy/Ride_my_way/badge.svg?branch=develop)](https://coveralls.io/github/ozezzy/Ride_my_way?branch=develop)
+![Build Status](https://travis-ci.org/ozezzy/Ride_my_way.svg?branch=develop) [![Maintainability](https://api.codeclimate.com/v1/badges/7ec10445c08aa4b8f087/maintainability)](https://codeclimate.com/github/ozezzy/Ride_my_way/maintainability) [![Coverage Status](https://coveralls.io/repos/github/ozezzy/Ride_my_way/badge.svg?branch=develop)](https://coveralls.io/github/ozezzy/Ride_my_way?branch=develop)
 
 Ride-my-way is a carpooling application that allows users to create ride sharing offer or join available ride offers
 
