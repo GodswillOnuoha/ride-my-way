@@ -1,4 +1,5 @@
 var assert = require('assert');
+require('../app.js');
 
 describe('Basic Mocha String Test', function () {
  it('should return number of charachters in a string', function () {
