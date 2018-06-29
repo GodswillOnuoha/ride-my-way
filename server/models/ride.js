@@ -48,7 +48,13 @@ class Db {
         return this.rides[i];
       }
     }
-    return 0;
+    return undefined;
+  }
+
+  // update ride request
+  updateJoinRequest(rideId, request) {
+    this.rides[rideId].requests.push(request);
+    return this.rides[rideId];
   }
 
   makeTestTdata() {
