@@ -9,19 +9,13 @@ class Ride {
 class Db {
   constructor() {
     this.rides = []; // available rides
-    this.ids = 0;
+    this.ids = 3;
     this.makeTestTdata();
-  }
-
-  // generates id
-  genId() {
-    this.ids += 1;
-    return this.ids;
   }
 
   // add a ride
   addRide(bStop, fDestinantion, time, date, vType, pStops) {
-    const ride = new Ride(this.genId());
+    const ride = new Ride(this.ids);
     ride.boarding_stop = bStop;
     ride.final_dest = fDestinantion;
     ride.ride_time = time;
@@ -31,6 +25,7 @@ class Db {
     ride.requests = [];
 
     this.rides.push(ride);
+    this.ids += 1;
 
     return ride.id;
   }
@@ -48,7 +43,13 @@ class Db {
         return this.rides[i];
       }
     }
-    return 0;
+    return undefined;
+  }
+
+  // update ride request
+  updateJoinRequest(rideId, request) {
+    this.rides[rideId].requests.push(request);
+    return this.rides[rideId];
   }
 
   makeTestTdata() {
