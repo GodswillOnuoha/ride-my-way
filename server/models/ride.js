@@ -48,7 +48,7 @@ class Db {
         return this.rides[i];
       }
     }
-    return 0;
+    return undefined;
   }
 
   makeTestTdata() {
