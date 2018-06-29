@@ -8,5 +8,4 @@ route.get('/:rideId', rideController.getSingleRide);
 route.post('/:rideId/requests', rideController.joinRide);
 route.post('/', rideController.createRide);
 
-
 export default route;

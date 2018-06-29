@@ -11,7 +11,6 @@ const getAllRides = (req, res) => {
   });
 };
 
-
 // Get a single ride
 const getSingleRide = (req, res) => {
   const id = parseInt(req.params.rideId, 10);
