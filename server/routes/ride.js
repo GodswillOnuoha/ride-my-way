@@ -5,5 +5,6 @@ const route = express.Router();
 
 route.get('/', rideController.getAllRides);
 route.get('/:rideId', rideController.getSingleRide);
+route.post('/:rideId/requests', rideController.joinRide);
 
 export default route;

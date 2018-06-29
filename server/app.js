@@ -3,6 +3,8 @@ import bodyParser from 'body-parser';
 import rideRoutes from './routes/ride';
 
 const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

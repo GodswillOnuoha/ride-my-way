@@ -50,6 +50,12 @@ class Db {
     }
     return undefined;
   }
+  
+  // update ride request
+  updateJoinRequest(rideId, request) {
+    this.rides[rideId].requests.push(request);
+    return this.rides[rideId];
+  }
 
   makeTestTdata() {
     // add some initial data
