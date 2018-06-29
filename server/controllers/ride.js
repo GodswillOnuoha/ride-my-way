@@ -53,8 +53,50 @@ const joinRide = (req, res) => {
   });
 };
 
+// process request to join ride
+const createRide = (req, res) => {
+  const lastRideId = db.ids; // last ride id in db;
+  const newRide = {
+    bStop: req.body.boadingStop,
+    fDestinantion: req.body.finalDestination,
+    time: req.body.time,
+    date: req.body.date,
+    vType: req.body.vehicleType,
+    pStops: req.body.possibleStops,
+  };
+
+  if (!newRide.pStops) {
+    newRide.pStops = [];
+  }
+
+  // return error if a field is missing
+  // ME: Learn and use express validator next !!!!!!
+  if (!newRide.bStop || !newRide.fDestinantion || !newRide.time
+     || !newRide.date) {
+    return res.status(400).json({
+      error: 'missing fields',
+    });
+  }
+
+  db.addRide(newRide.bStop, newRide.fDestinantion,
+    newRide.time, newRide.date, newRide.vType, newRide.pStops);
+
+  // confirm db write was successful
+  if (db.ids === lastRideId) {
+    return res.status(200).json({
+      message: 'Sucess!',
+      rideId: db.ids,
+    });
+  }
+  return res.status(200).json({
+    message: 'Sucess!',
+    rideId: db.ids,
+  });
+};
+
 export default {
   getAllRides,
   getSingleRide,
   joinRide,
+  createRide,
 };

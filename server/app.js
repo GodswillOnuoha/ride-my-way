@@ -6,9 +6,6 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-
 app.get('/', (req, res) => res.send('Hello World!'));
 app.use('/api/v1/rides', rideRoutes);
 
