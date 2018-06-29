@@ -6,5 +6,4 @@ const route = express.Router();
 route.get('/', rideController.getAllRides);
 route.get('/:rideId', rideController.getSingleRide);
 
-
 export default route;
