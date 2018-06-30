@@ -1,9 +1,18 @@
-var express = require("express");
-var app = express();
+import express from 'express';
+import bodyParser from 'body-parser';
+import rideRoutes from './routes/ride';
+
+const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => res.send('Hello World!'));
+app.use('/api/v1/rides', rideRoutes);
+app.use('/api/v1/', (req, res) => {
+  res.status(200).json({message:"Welcome!"});
+});
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
 app.listen(port);
 
-module.exports = app;
+export default app;
