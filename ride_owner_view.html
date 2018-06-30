@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
   <head>
     <meta charset="utf-8"/>
@@ -9,17 +8,20 @@
     <link href="static/styles/main.css" type="text/css" rel="stylesheet">      
 
   </head>
-  <body>
-      <nav class="navbar">
-          <div class="logo">
-             <h2> <a href="index.html">Ride My Way </a></h2>
-          </div>
-          <div class="navbar-link">
-           <a href="login.html">Login/Sign Up</a>
-          </div>
-       </nav>
 
-    <div class="main_wrapper">
+  <body>
+    <div class="main-wrapper">
+      <nav class="navbar">
+        <div class="logo">
+            <a  href="index.html" > <h2>Ride My Way </h2> </a>
+        </div>
+        <div class="navbar-link">
+          <a href="login.html">Login/Sign Up</a>
+        </div>
+      </nav>
+
+      <div id="content-wrapper">
+
      <div class="table_wrapper details_card">
       <span class="t_title">Ride Details</span>
       <table class="details_table">
@@ -74,13 +76,18 @@
           </table>
           <button type="submit" class="submit-btn join-btn">submit</button>
       </form>
-     </div> <!-- end of main wrapper  -->
+    </div> <!-- end table wrapper -->
+
+    </div> <!-- end content wrapper -->
 
     <footer>
-          <p>
-              Ride My Way &copy; 2018
-          </p>
+        <p>
+            Ride My Way &copy; 2018
+        </p>
     </footer>
-  </div>
+  
+  </div> <!-- end of main wrapper -->
+  
+  <script type='text/javascript' src='scripts/main.js'></script>
   </body>
- </html>
+  </html>

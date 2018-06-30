@@ -1,74 +1,90 @@
 <!DOCTYPE html>
-
 <html>
   <head>
     <meta charset="utf-8"/>
     <title>Ride My Way</title>
     <meta name="viewport" content="width=device-width, minimumscale=
     1.0, maximum-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="static/styles/main.css" type="text/css" rel="stylesheet">      
 
   </head>
+
   <body>
+    <div class="main-wrapper">
       <nav class="navbar">
-          <div class="logo">
-             <h2> <a href="index.html">Ride My Way </a></h2>
-          </div>
-          <div class="navbar-link">
-           <a href="login.html">Login/Sign Up</a>
-          </div>
-       </nav>
+        <div class="logo">
+            <a  href="index.html" > <h2>Ride My Way </h2> </a>
+        </div>
+        <div class="navbar-link">
+          <a href="login.html">Logout</a>
+          <a href="user_profile.html">Profile</a>
+        </div>
+      </nav>
 
-    <div class="main_wrapper">
-  <div class="table_wrapper">
-    <table class="viewTable">
-      <tr>
-        <th>Boarding Time</th>
-        <th>Boarding Stop</th>
-        <th>Final Destination</th>
-        <th>Possible Stops </th>
-        <th>Action</th>
-      </tr>
+      <div id="content-wrapper">
+        
+        <div class="table_wrapper">
+          <h1 class="title table-title">Available Ride Offers</h1>
 
-      <tr>
-        <td>6:30am</td>
-        <td>AP-Ikorodu</td>
-        <td>Eko Hotels</td>
-        <td>Ojota, Fadeyi, CMS</td>
-        <td><a href="#">join</a> or <a href="ride_details_view.html">view</a></td>
-      </tr>
+          <table class="viewTable">
+            <thead>
+            <tr>
+              <th>Boarding Time</th>
+              <th>Boarding Stop</th>
+              <th>Final Destination</th>
+              <th>Possible Stops </th>
+              <th>Action</th>
+            </tr>
+          </thead>
 
-      <tr>
-        <td>7:00am</td>
-        <td> Awoyaya (Ibejuleki) </td>
-        <td>Badagry</td>
-        <td>Lekki, Oshodi, Mile 12</td>
-        <td><a href="#">join</a> or <a href="ride_details_view.html">view</a></td>
-      </tr>
-      <tr>
-        <td>5:10pm</td>
-        <td>Ketu</td>
-        <td>Marina</td>
-        <td></td>
-        <td><a href="#">join</a> or <a href="ride_details_view.html">view</a></td>
-      </tr>
+          <tbody>
+            <tr>
+              <td>6:30am</td>
+              <td>AP-Ikorodu</td>
+              <td>Eko Hotels</td>
+              <td>Ojota, Fadeyi, CMS</td>
+              <td><a href="#"><i class="fa fa-user-plus" style="font-size:24px"></i></a> &nbsp; or &nbsp; <a href="ride_details_view.html"><i class="fa fa-eye" style="font-size:26px;color:green"></i></a></td>
+            </tr>
 
-      <tr>
-        <td>4:30pm</td>
-        <td>Eko Hotels</td>
-        <td>AP-Ikorodu</td>
-        <td>Ojota, Fadeyi, CMS</td>
-        <td><a href="#">view join request</a></td>
-      </tr>
-    </table>
-    </div>
-    </div>
+            <tr>
+              <td>7:00am</td>
+              <td> Awoyaya (Ibejuleki) </td>
+              <td>Badagry</td>
+              <td>Lekki, Oshodi, Mile 12</td>
+              <td><a href="#"><i class="fa fa-user-plus" style="font-size:24px"></i></a> &nbsp; or &nbsp; <a href="ride_details_view.html"><i class="fa fa-eye" style="font-size:26px;color:green"></i></a></td>
+            </tr>
+            <tr>
+              <td>5:10pm</td>
+              <td>Ketu</td>
+              <td>Marina</td>
+              <td></td>
+              <td><a href="#"><i class="fa fa-user-plus" style="font-size:24px"></i></a> &nbsp; or &nbsp; <a href="ride_details_view.html"><i class="fa fa-eye" style="font-size:26px;color:green"></i></a></td>
+            </tr>
 
-    <footer>
-        <p>
-            Ride My Way &copy; 2018
-        </p>
-    </footer>
+            <tr>
+              <td>4:30pm</td>
+              <td>Eko Hotels</td>
+              <td>AP-Ikorodu</td>
+              <td>Ojota, Fadeyi, CMS</td>
+              <td><a href="#"><i class="fa fa-user-plus" style="font-size:24px"></i></a> &nbsp; or &nbsp; <a href="ride_details_view.html"><i class="fa fa-eye" style="font-size:26px;color:green"></i></a></td>
+            </tr>
+            </tbody>
+          </table>
 
-  </body>
- </html>
+        </div>
+        <!-- end table wrapper -->
+
+  </div> <!-- end content wrapper -->
+
+  <footer>
+      <p>
+          Ride My Way &copy; 2018
+      </p>
+  </footer>
+
+</div> <!-- end of main wrapper -->
+
+<script type='text/javascript' src='scripts/main.js'></script>
+</body>
+</html>

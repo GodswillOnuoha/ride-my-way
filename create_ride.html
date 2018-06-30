@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
   <head>
     <meta charset="utf-8"/>
@@ -9,18 +8,21 @@
     <link href="static/styles/main.css" type="text/css" rel="stylesheet">      
 
   </head>
-  <body> 
-      <nav class="navbar">
-          <div class="logo">
-             <h2> <a href="index.html">Ride My Way </a></h2>
-          </div>
-          <div class="navbar-link">
-           <a href="login.html">Login/Sign Up</a>
-          </div>
-       </nav>
 
-        <div class="main_wrapper">
-          <form class="form" id="create_rideform" action="" method='post'>
+  <body>
+    <div class="main-wrapper">
+      <nav class="navbar">
+        <div class="logo">
+            <a  href="index.html" > <h2>Ride My Way </h2> </a>
+        </div>
+        <div class="navbar-link">
+          <a href="login.html">Login/Sign Up</a>
+        </div>
+      </nav>
+
+      <div id="content-wrapper">
+
+          <form class="form" id="create-rideform" action="" method='post'>
             <h1 class="title">Offer a Ride</h1>
             <div class="form-item">
             	<label for="boarding"> Boarding stop </label>
@@ -48,11 +50,17 @@
             </div>
             <button type="submit" class="submit-btn">Submit</button>
           </form>
-          </div>
-	<footer>
-        <p>
-            Ride My Way &copy; 2018
-        </p>
-    </footer>
- 	</body>
- </html>
+          
+        </div> <!-- end content wrapper -->
+
+        <footer>
+            <p>
+                Ride My Way &copy; 2018
+            </p>
+        </footer>
+    
+      </div> <!-- end of main wrapper -->
+    
+      <script type='text/javascript' src='scripts/main.js'></script>
+      </body>
+    </html>
