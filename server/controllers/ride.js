@@ -55,7 +55,6 @@ const joinRide = (req, res) => {
 
 // process request to join ride
 const createRide = (req, res) => {
-  const lastRideId = db.ids; // last ride id in db;
   const newRide = {
     bStop: req.body.boadingStop,
     fDestinantion: req.body.finalDestination,
@@ -81,13 +80,6 @@ const createRide = (req, res) => {
   db.addRide(newRide.bStop, newRide.fDestinantion,
     newRide.time, newRide.date, newRide.vType, newRide.pStops);
 
-  // confirm db write was successful
-  if (db.ids === lastRideId) {
-    return res.status(200).json({
-      message: 'Sucess!',
-      rideId: db.ids,
-    });
-  }
   return res.status(200).json({
     message: 'Sucess!',
     rideId: db.ids,
