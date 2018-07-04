@@ -1,120 +1,116 @@
 import jwt from 'jsonwebtoken';
+import log from 'fancy-log';
 import bcrypt from 'bcrypt';
-import uuidv1 from 'uuid/v1';
 import env from 'dotenv';
-import db from '../database/connection';
+import userModel from '../models/user';
 
 env.config();
 
-class Auth {
+class userAuth {
+  static signup(req, res) {
+    const {
+      firstname, lastname, username, email, password,
+    } = req.body;
+
+    userModel.findUserByEmail(email)
+      .then((result) => {
+        if (result.rowCount >= 1) {
+          res.status(400).json({
+            error: 'Email is already registered',
+          });
+        } else {
+          const hashedPassword = bcrypt.hashSync(password, 8);
+
+          const newUser = {
+            firstName: firstname,
+            lastName: lastname,
+            username,
+            email,
+            password: hashedPassword,
+            dateCreated: new Date().toISOString(),
+          };
+
+          userModel.create(newUser)
+            .then((dbRes) => {
+              log(dbRes);
+              res.status(201).json({
+                message: 'success',
+                user: newUser,
+              });
+            })
+            .catch((dbError) => {
+              log.error(dbError);
+              res.status(500).json({
+                error: 'account creation failed.',
+              });
+            });
+        }
+      })
+      .catch((emailError) => {
+        log.error(emailError);
+        res.status(500).json({
+          error: 'error',
+        });
+      });
+  }
+
+  // logs user in
   static login(req, res) {
     const { email, password } = req.body;
 
-    if ((email === null || undefined) || (password === null || undefined)) {
+    if (!email || !password) {
       res.status(400).json({
-        error: 'bad request',
+        error: 'supply email and password!',
       });
     } else {
-      const user = db.findUser(email);
-      user.then((result) => {
-        if (result.rowCount < 1) {
-          res.status(404).json({
-            status: 'error',
-            message: 'Auth Failed! Email is not registered',
-          });
-        } else {
-          const comparePassword = bcrypt.compareSync(password, result.rows[0].password);
-          if (!comparePassword) {
-            res.status(401).json({
-              status: 'error',
-              message: 'Auth Failed! Password is incorrect',
-              data: result.rows[0],
+      // query user model
+      userModel.findUserByEmail(email)
+        .then((result) => {
+          if (result.rowCount < 1) {
+            res.status(404).json({
+              error: 'Auth Failed! wrong email or password',
             });
           } else {
-            const user = {
-              id: result.rows[0].id,
-              isAuth: true,
-            };
+            // validate credential
+            const comparePassword = bcrypt.compareSync(password, result.rows[0].password);
+            if (!comparePassword) {
+              // invalid credential
+              res.status(401).json({
+                error: 'Auth Failed! wrong email or password',
+              });
+            } else {
+              // valid credentials
+              const profile = {
+                email: result.rows[0].email,
+                username: result.rows[0].username,
+                authenticated: true,
+              };
 
-            jwt.sign({ user }, process.env.JWT_SECRET_TOKEN, { expiresIn: '20h' }, (error, token) => {
-              if (error) {
-                res.status(522).json({
-                  status: 'error',
-                  message: 'Auth Failed!',
-                  error,
+              jwt.sign({ profile }, process.env.JWT_SECRET_TOKEN, { expiresIn: '1h' },
+                (error, token) => {
+                  if (error) {
+                    res.status(522).json({
+                      error: 'Auth Failed!',
+                    });
+                  } else {
+                    res.status(200).json({
+                      message: 'success',
+                      profile,
+                      token,
+                    });
+                  }
                 });
-              } else {
-                res.status(200).json({
-                  status: 'success',
-                  message: 'Auth Successful!',
-                  user,
-                  token,
-                });
-              }
-            });
+            }
           }
-        }
-      })
+        })
         .catch((error) => {
-          console.log(error);
+          log(error);
           res.status(500).json({
-            status: 'error',
-            message: 'Unexpected Error Occured',
-            error,
+            message: 'server Error ',
           });
         });
     }
   }
-
-  static register(req, res) {
-    const { name, email, password } = req.body;
-
-    db.query('SELECT * FROM users WHERE email=$1', [email])
-      .then((result) => {
-        if (result.rowCount >= 1) {
-          res.status(400).json({
-            status: 'error',
-            message: 'Email is already registered',
-          });
-        } else {
-          const ecryptedPassword = bcrypt.hashSync(password, 8);
-          const uid = uuidv1();
-
-          const userData = [uid, name, email, ecryptedPassword, 'avatar.png', new Date().toISOString()];
-          const query = 'INSERT INTO users(id, name, email, password, photo, created_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
-
-          db.query(query, userData)
-            .then((result) => {
-              res.status(201).json({
-                status: 'success',
-                message: 'User account successfully Created',
-                data: {
-                  id: result.rows[0].id,
-                  name: result.rows[0].name,
-                  email: result.rows[0].email,
-                  phone_number: result.rows[0].phone_number,
-                  photo: result.rows[0].photo,
-                  created_at: result.rows[0].created_at,
-                },
-              });
-            })
-            .catch((error) => {
-              res.status(500).json({
-                status: 'error',
-                message: 'User account creation failed.',
-                error: err,
-              });
-            });
-        }
-      })
-      .catch((error) => {
-        res.status(500).json({
-          status: 'error',
-          message: 'Error Occured',
-          error,
-        });
-      });
-  }
 }
 
-module.exports = Auth;
+export default userAuth;
