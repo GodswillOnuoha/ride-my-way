@@ -130,6 +130,30 @@ class rideControllers {
         });
       });
   }
+
+  static getAllRequests(req, res) {
+    const rideId = parseInt(req.params.rideId, 10);
+    if (!rideId) {
+      res.status(400).json({
+        error: 'missing id field',
+      });
+    } else {
+      rideModel.fetchRideOffer(rideId)
+        .then((rideRes) => {
+        // check ride exists
+          if (!rideRes.rows[0]) {
+            res.status(404).json({
+              error: 'invalid ride',
+            });
+          } else {
+            res.status(200).json({
+              message: 'success',
+              requests: JSON.parse(rideRes.rows[0].joinrequests),
+            });
+          }
+        });
+    }
+  }
 }
 
 export default rideControllers;
