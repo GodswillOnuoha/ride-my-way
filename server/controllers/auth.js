@@ -8,70 +8,81 @@ env.config();
 
 class userAuth {
   static signup(req, res) {
-    const {
-      firstname, lastname, username, email, password,
-    } = req.body;
+    const user = {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
+    };
 
-    userModel.findUserByEmail(email)
-      .then((result) => {
-        if (result.rowCount >= 1) {
-          res.status(400).json({
-            error: 'Email is already registered',
-          });
-        } else {
-          userModel.findUserByUsername(username)
-            .then((usernameResp) => {
-              if (usernameResp.rowCount >= 1) {
-                res.status(400).json({
-                  error: 'username already taken',
-                });
-              } else {
-                const hashedPassword = bcrypt.hashSync(password, 8);
-
-                const newUser = {
-                  firstName: firstname,
-                  lastName: lastname,
-                  username,
-                  email,
-                  password: hashedPassword,
-                  dateCreated: new Date().toISOString(),
-                };
-
-                userModel.create(newUser)
-                  .then(() => {
-                    res.status(201).json({
-                      message: 'account creation successful, login',
-                    });
-                  })
-                  .catch((dbError) => {
-                    log.error(dbError);
-                    res.status(500).json({
-                      error: 'account creation failed.',
-                    });
-                  });
-              }
-            });
-        }
-      })
-      .catch((emailError) => {
-        log.error(emailError);
-        res.status(500).json({
-          error: 'error',
-        });
+    if (!user.username || !user.email || !user.password) {
+      res.status(400).json({
+        error: 'missing fields',
       });
+    } else {
+      userModel.findUserByEmail(user.email)
+        .then((result) => {
+          if (result.rowCount >= 1) {
+            res.status(400).json({
+              error: 'Email is already registered',
+            });
+          } else {
+            userModel.findUserByUsername(user.username)
+              .then((usernameResp) => {
+                if (usernameResp.rowCount >= 1) {
+                  res.status(400).json({
+                    error: 'username already taken',
+                  });
+                } else {
+                  const hashedPassword = bcrypt.hashSync(user.password, 8);
+
+                  const newUser = {
+                    firstName: user.firstname,
+                    lastName: user.lastname,
+                    username: user.username,
+                    email: user.email,
+                    password: hashedPassword,
+                    dateCreated: new Date().toISOString(),
+                  };
+
+                  userModel.create(newUser)
+                    .then(() => {
+                      res.status(201).json({
+                        message: 'account creation successful, login',
+                      });
+                    })
+                    .catch(() => {
+                      res.status(500).json({
+                        error: 'account creation failed. server error',
+                      });
+                    });
+                }
+              });
+          }
+        })
+        .catch(() => {
+          res.status(500).json({
+            error: 'server error',
+          });
+        });
+    }
   }
 
   // logs user in
   static login(req, res) {
-    const { email, password } = req.body;
+    const user = {
+      email: req.body.email,
+      password: req.body.password,
+    };
 
-    if (!email || !password) {
+    if (!user.email || !user.password) {
       res.status(400).json({
         error: 'supply email and password!',
       });
     } else {
       // query user model
-      userModel.findUserByEmail(email)
+      userModel.findUserByEmail(user.email)
         .then((result) => {
           if (result.rowCount < 1) {
             res.status(404).json({
@@ -79,7 +90,7 @@ class userAuth {
             });
           } else {
             // validate credential
-            const comparePassword = bcrypt.compareSync(password, result.rows[0].password);
+            const comparePassword = bcrypt.compareSync(user.password, result.rows[0].password);
             if (!comparePassword) {
               // invalid credential
               res.status(401).json({
@@ -92,18 +103,21 @@ class userAuth {
                 username: result.rows[0].username,
                 authenticated: true,
               };
-              log(profile);
-              jwt.sign({ profile }, process.env.JWT_SECRET_TOKEN, { expiresIn: '1h' },
+              jwt.sign({ profile }, process.env.JWT_SECRET_TOKEN, { expiresIn: '24h' },
                 (error, token) => {
                   if (error) {
                     res.status(522).json({
-                      error: 'Authentication Failed!',
+                      status: 'Error',
+                      message: 'Server Authentication Failed!',
                     });
                   } else {
                     res.status(200).json({
-                      message: 'login successful',
-                      profile,
-                      token,
+                      status: 'success',
+                      data: {
+                        username: profile.username,
+                        auth: true,
+                        token,
+                      },
                     });
                   }
                 });
