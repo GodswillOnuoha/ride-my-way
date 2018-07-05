@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import env from 'dotenv';
-import log from 'fancy-log';
 
 env.config();
 

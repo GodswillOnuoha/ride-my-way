@@ -15,7 +15,6 @@ class userAuth {
       email: req.body.email,
       password: req.body.password,
     };
-
     if (!user.username || !user.email || !user.password) {
       res.status(400).json({
         error: 'missing fields',
