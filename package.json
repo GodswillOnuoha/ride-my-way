@@ -7,8 +7,6 @@
     "start": "node dist/app.js",
     "start:dev": "nodemon --exec babel-node server/app.js",
     "heroku-postbuild": "npm run build",
-    "test": "nyc mocha --compilers js:babel-register server/test --exit",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "build": "babel server -d dist",
     "serve": "node dist/app.js"
   },
@@ -43,6 +41,7 @@
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
     "coveralls": "^3.0.1",
+    "dotenv": "^6.0.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.13.0",

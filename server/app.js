@@ -11,7 +11,6 @@ app.get('/', (req, res) => res.send('Hello World!'));
 app.use('/api/v1/rides', rideRoutes);
 app.use('/api/v1/auth', authRoutes);
 
-
 const port = process.env.PORT || 3000;
 app.listen(port);
 
