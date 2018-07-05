@@ -102,7 +102,6 @@ class userAuth {
                 username: result.rows[0].username,
                 authenticated: true,
               };
-
               jwt.sign({ profile }, process.env.JWT_SECRET_TOKEN, { expiresIn: '24h' },
                 (error, token) => {
                   if (error) {
