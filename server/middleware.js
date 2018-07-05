@@ -17,8 +17,7 @@ module.exports = (req, res, next) => {
         error: 'invalid token',
       });
     } else {
-      log(decoded);
-      req.authData = decoded;
+      req.profile = decoded;
       next();
     }
   });

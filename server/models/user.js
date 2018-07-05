@@ -33,6 +33,15 @@ class User {
     const res = db.query(query);
     return res;
   }
+
+  static findUserByUsername(username) {
+    const query = {
+      text: 'SELECT * FROM users WHERE username = $1',
+      values: [username],
+    };
+    const res = db.query(query);
+    return res;
+  }
 }
 
 export default User;

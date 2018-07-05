@@ -3,9 +3,9 @@
 
 
 -- CREATE TABLE rideOffer (
---   -- rideId SERIAL PRIMARY KEY AUTO_INCREMENT,
+--   rideId integer NOT NULL DEFAULT nextval('rideoffers_rideid_seq'::regclass),
 --   boardingStop VARCHAR,
---   finalDestinantion VARCHAR,
+--   finalDestination VARCHAR,
 --   rideTime VARCHAR,
 --   rideDate VARCHAR,
 --   possibleStops VARCHAR,
@@ -16,12 +16,12 @@
 -- );
 
 -- CREATE TABLE Users (
---   -- userId integer NOT NULL DEFAULT nextval('rideoffers_rideid_seq':=:regclass),
+--   userId integer NOT NULL DEFAULT nextval('rideoffers_rideid_seq'::regclass),
 --   firstName VARCHAR,
 --   lastName VARCHAR,
 --   username VARCHAR,
 --   email VARCHAR,
---   Passkey VARCHAR
+--   password VARCHAR NOT NULL
 -- );
 
 -- INSERT INTO rideOffer (rideId, boardingStop, finalDestinantion, rideTime, rideDate, possibleStops, vehicleType, joinRequests, userId)
