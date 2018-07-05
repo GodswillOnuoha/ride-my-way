@@ -6,8 +6,8 @@ class rideControllers {
   static getAllRides(req, res) {
     const result = rideModel.fetchRideOffers();
     result.then(data => res.status(200).json({
-      message: 'succs',
-      ride: data.rows,
+      status: 'success',
+      data: { ride: data.rows },
     }));
   }
 
@@ -20,13 +20,16 @@ class rideControllers {
 
       if (ride === undefined) {
         return res.status(404).json({
-          error: 'no ride with id found',
+
+          error: 'ride offer not found'
         });
       }
 
       return res.status(200).json({
-        message: 'Sucess!',
-        ride,
+        status: 'sucess!',
+        data: {
+          ride,
+        },
       });
     });
   }
@@ -140,15 +143,63 @@ class rideControllers {
     } else {
       rideModel.fetchRideOffer(rideId)
         .then((rideRes) => {
-        // check ride exists
+          if (!rideRes.rows[0]) {
+            res.status(404).json({
+              error: 'ride offer not found',
+            });
+          } else if (parseInt(rideRes.rows[0].userid, 10)
+          === parseInt(req.profile.profile.userId, 10)) {
+            res.status(200).json({
+              message: 'success',
+              requests: JSON.parse(rideRes.rows[0].joinrequests),
+            });
+          } else {
+            res.status(400).json({
+              error: 'can only view join requests for your ride offer!!',
+            });
+          }
+        });
+    }
+  }
+
+
+  static respondToJoinRequests(req, res) {
+    const rideId = parseInt(req.params.rideId, 10);
+    const joinRequestId = parseInt(req.params.requestId, 10);
+
+
+    if (!rideId || !joinRequestId) {
+      res.status(400).json({
+        error: 'missing id field',
+      });
+    } else {
+      rideModel.fetchRideOffer(rideId)
+        .then((rideRes) => {
           if (!rideRes.rows[0]) {
             res.status(404).json({
               error: 'invalid ride',
             });
+
+          } else if (parseInt(rideRes.rows[0].userid, 10)
+          === parseInt(req.profile.profile.userId, 10)) {
+            const joinrequests = JSON.parse(rideRes.rows[0].joinrequests);
+            log(joinrequests.requests.length);
+            log(joinRequestId);
+
+            if (joinRequestId > joinrequests.requests.length) {
+              res.status(400).json({
+                status: 'fail',
+                data: {
+                  message: 'valid ride offer id required',
+                },
+              });
+            } else {
+              // /// logic here
+              log(req);
+            }
           } else {
-            res.status(200).json({
-              message: 'success',
-              requests: JSON.parse(rideRes.rows[0].joinrequests),
+            res.status(400).json({
+              error: 'Only view requests for your own ride offer!!',
             });
           }
         });
