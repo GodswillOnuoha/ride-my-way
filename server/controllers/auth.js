@@ -15,7 +15,6 @@ class userAuth {
       email: req.body.email,
       password: req.body.password,
     };
-
     if (!user.username || !user.email || !user.password) {
       res.status(400).json({
         error: 'missing fields',
@@ -103,6 +102,7 @@ class userAuth {
                 username: result.rows[0].username,
                 authenticated: true,
               };
+
               jwt.sign({ profile }, process.env.JWT_SECRET_TOKEN, { expiresIn: '24h' },
                 (error, token) => {
                   if (error) {

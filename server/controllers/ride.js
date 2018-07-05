@@ -20,7 +20,8 @@ class rideControllers {
 
       if (ride === undefined) {
         return res.status(404).json({
-          error: 'ride offer not found',
+
+          error: 'ride offer not found'
         });
       }
 
@@ -178,6 +179,7 @@ class rideControllers {
             res.status(404).json({
               error: 'invalid ride',
             });
+
           } else if (parseInt(rideRes.rows[0].userid, 10)
           === parseInt(req.profile.profile.userId, 10)) {
             const joinrequests = JSON.parse(rideRes.rows[0].joinrequests);
