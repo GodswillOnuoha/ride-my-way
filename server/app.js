@@ -9,7 +9,6 @@ app.use(bodyParser.json());
 app.get('/', (req, res) => res.send('Hello World!'));
 app.use('/api/v1/rides', rideRoutes);
 
-
 const port = process.env.PORT || 3000;
 app.listen(port);
 
