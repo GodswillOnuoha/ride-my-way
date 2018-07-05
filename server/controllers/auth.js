@@ -19,30 +19,37 @@ class userAuth {
             error: 'Email is already registered',
           });
         } else {
-          const hashedPassword = bcrypt.hashSync(password, 8);
+          userModel.findUserByUsername(username)
+            .then((usernameResp) => {
+              if (usernameResp.rowCount >= 1) {
+                res.status(400).json({
+                  error: 'username already taken',
+                });
+              } else {
+                const hashedPassword = bcrypt.hashSync(password, 8);
 
-          const newUser = {
-            firstName: firstname,
-            lastName: lastname,
-            username,
-            email,
-            password: hashedPassword,
-            dateCreated: new Date().toISOString(),
-          };
+                const newUser = {
+                  firstName: firstname,
+                  lastName: lastname,
+                  username,
+                  email,
+                  password: hashedPassword,
+                  dateCreated: new Date().toISOString(),
+                };
 
-          userModel.create(newUser)
-            .then((dbRes) => {
-              log(dbRes);
-              res.status(201).json({
-                message: 'success',
-                user: newUser,
-              });
-            })
-            .catch((dbError) => {
-              log.error(dbError);
-              res.status(500).json({
-                error: 'account creation failed.',
-              });
+                userModel.create(newUser)
+                  .then(() => {
+                    res.status(201).json({
+                      message: 'account creation successful, login',
+                    });
+                  })
+                  .catch((dbError) => {
+                    log.error(dbError);
+                    res.status(500).json({
+                      error: 'account creation failed.',
+                    });
+                  });
+              }
             });
         }
       })
@@ -81,20 +88,20 @@ class userAuth {
             } else {
               // valid credentials
               const profile = {
-                email: result.rows[0].email,
+                userId: result.rows[0].userid,
                 username: result.rows[0].username,
                 authenticated: true,
               };
-
+              log(profile);
               jwt.sign({ profile }, process.env.JWT_SECRET_TOKEN, { expiresIn: '1h' },
                 (error, token) => {
                   if (error) {
                     res.status(522).json({
-                      error: 'Auth Failed!',
+                      error: 'Authentication Failed!',
                     });
                   } else {
                     res.status(200).json({
-                      message: 'success',
+                      message: 'login successful',
                       profile,
                       token,
                     });
@@ -106,7 +113,7 @@ class userAuth {
         .catch((error) => {
           log(error);
           res.status(500).json({
-            message: 'server Error ',
+            error: 'server Error ',
           });
         });
     }
