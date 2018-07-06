@@ -1,12 +1,23 @@
 import jwt from 'jsonwebtoken';
-import log from 'fancy-log';
 import bcrypt from 'bcrypt';
 import env from 'dotenv';
-import userModel from '../models/user';
+import User from '../models/user';
 
 env.config();
 
-class userAuth {
+class Valid {
+  static email(email) {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
+
+  static password(pass) {
+    const re = /^[a-zA-Z0-9]+$/;
+    return re.test(String(pass).toLowerCase());
+  }
+}
+
+class Auth {
   static signup(req, res) {
     const user = {
       firstname: req.body.firstname,
@@ -15,23 +26,46 @@ class userAuth {
       email: req.body.email,
       password: req.body.password,
     };
-    if (!user.username || !user.email || !user.password) {
+    if (!user.username) {
       res.status(400).json({
-        error: 'missing fields',
+        status: 'fail',
+        message: 'missing username fields',
+      });
+    } else if (!user.email) {
+      res.status(400).json({
+        status: 'fail',
+        message: 'missing email fields',
+      });
+    } else if (!user.password) {
+      res.status(400).json({
+        status: 'fail',
+        message: 'missing password fields',
+      });
+    } else if (!Valid.email(user.email)) {
+      res.status(400).json({
+        status: 'fail',
+        message: 'bad email format',
+      });
+    } else if (!Valid.password(user.password)) {
+      res.status(400).json({
+        status: 'fail',
+        message: 'bad password (use letters and numbers)',
       });
     } else {
-      userModel.findUserByEmail(user.email)
+      User.findUserByEmail(user.email)
         .then((result) => {
           if (result.rowCount >= 1) {
             res.status(400).json({
-              error: 'Email is already registered',
+              status: 'fail',
+              message: 'Email is already registered',
             });
           } else {
-            userModel.findUserByUsername(user.username)
+            User.findUserByUsername(user.username)
               .then((usernameResp) => {
                 if (usernameResp.rowCount >= 1) {
                   res.status(400).json({
-                    error: 'username already taken',
+                    status: 'fail',
+                    message: 'username already taken',
                   });
                 } else {
                   const hashedPassword = bcrypt.hashSync(user.password, 8);
@@ -44,16 +78,23 @@ class userAuth {
                     password: hashedPassword,
                     dateCreated: new Date().toISOString(),
                   };
-
-                  userModel.create(newUser)
+                  User.create(newUser)
                     .then(() => {
                       res.status(201).json({
-                        message: 'account creation successful, login',
+                        status: 'success',
+                        message: 'account created',
+                        user: {
+                          firstname: newUser.firstname,
+                          lastname: newUser.lastname,
+                          username: newUser.username,
+                          email: newUser.email,
+                        },
                       });
                     })
                     .catch(() => {
                       res.status(500).json({
-                        error: 'account creation failed. server error',
+                        status: 'error',
+                        message: 'account creation failed. server error',
                       });
                     });
                 }
@@ -77,15 +118,28 @@ class userAuth {
 
     if (!user.email || !user.password) {
       res.status(400).json({
-        error: 'supply email and password!',
+        status: 'fail',
+        message: 'supply email and password!',
+      });
+    } else if (!Valid.email(user.email)) {
+      res.status(400).json({
+        status: 'fail',
+        message: 'bad email format',
+      });
+    } else if (!Valid.password(user.password)) {
+      console.log(Valid.password(user.password));
+      res.status(400).json({
+        status: 'fail',
+        message: 'bad password (use letters and numbers)',
       });
     } else {
       // query user model
-      userModel.findUserByEmail(user.email)
+      User.findUserByEmail(user.email)
         .then((result) => {
           if (result.rowCount < 1) {
             res.status(404).json({
-              error: 'Auth Failed! wrong email or password',
+              status: 'fail',
+              message: 'Authentication Failed! wrong email or password',
             });
           } else {
             // validate credential
@@ -93,14 +147,14 @@ class userAuth {
             if (!comparePassword) {
               // invalid credential
               res.status(401).json({
-                error: 'Auth Failed! wrong email or password',
+                status: 'fail',
+                message: 'Authentication Failed! wrong email or password',
               });
             } else {
               // valid credentials
               const profile = {
                 userId: result.rows[0].userid,
                 username: result.rows[0].username,
-                authenticated: true,
               };
               jwt.sign({ profile }, process.env.JWT_SECRET_TOKEN, { expiresIn: '24h' },
                 (error, token) => {
@@ -112,25 +166,22 @@ class userAuth {
                   } else {
                     res.status(200).json({
                       status: 'success',
-                      data: {
-                        username: profile.username,
-                        auth: true,
-                        token,
-                      },
+                      message: 'login successful',
+                      token,
                     });
                   }
                 });
             }
           }
         })
-        .catch((error) => {
-          log(error);
+        .catch(() => {
           res.status(500).json({
-            error: 'server Error ',
+            status: 'error',
+            message: 'server Error ',
           });
         });
     }
   }
 }
 
-export default userAuth;
+export default Auth;
