@@ -1,36 +1,55 @@
-import log from 'fancy-log';
-import rideModel from '../models/ride';
+import Ride from '../models/ride';
 
 class rideControllers {
 // returns all rides offers
   static getAllRides(req, res) {
-    const result = rideModel.fetchRideOffers();
-    result.then(data => res.status(200).json({
-      status: 'success',
-      data: { ride: data.rows },
-    }));
+    Ride.fetchRideOffers()
+      .then(data => res.status(200).json({
+        status: 'success',
+        message: 'data retrieved',
+        rides: data.rows,
+      }))
+      . catch(() => {
+        res.status(500).json({
+          status: 'error',
+          message: 'database server error',
+        });
+      });
   }
 
   // Get a single ride
   static getSingleRide(req, res) {
-    const rideId = parseInt(req.params.rideId, 10);
-    const result = rideModel.fetchRideOffer(rideId);
-    result.then((data) => {
-      const ride = data.rows[0];
-
-      if (ride === undefined) {
-        return res.status(404).json({
-          error: 'ride offer not found',
-        });
-      }
-
-      return res.status(200).json({
-        status: 'sucess!',
-        data: {
-          ride,
-        },
+    if (!req.params.rideId || Number.isNaN(req.params.rideId)) {
+      res.status(200).json({
+        status: 'fail',
+        message: 'missing or invalid ride id',
       });
-    });
+    } else {
+      const rideId = parseInt(req.params.rideId, 10);
+
+      Ride.fetchRideOffer(rideId)
+        .then((data) => {
+          const ride = data.rows[0];
+
+          if (ride === undefined) {
+            res.status(404).json({
+              status: 'fail',
+              message: 'ride offer not found',
+            });
+          } else {
+            res.status(200).json({
+              status: 'sucess!',
+              ride,
+            });
+          }
+        })
+        .catch(() => {
+          res.status(500).json({
+            status: 'error',
+            message: 'database server error',
+          });
+        });
+    }
   }
 
 
@@ -38,47 +57,53 @@ class rideControllers {
   static joinRide(req, res) {
     const rideId = parseInt(req.params.rideId, 10);
 
-    rideModel.fetchRideOffer(rideId)
+    Ride.fetchRideOffer(rideId)
       .then((rideRes) => {
         // check ride exists
         if (!rideRes.rows[0]) {
-          res.status(400).json({
-            error: 'invalid ride or user id',
+          res.status(404).json({
+            status: 'fail',
+            message: 'ride not found',
           });
-        }
-
+        } else if (parseInt(rideRes.rows[0].userid, 10) === req.profile.profile.userId) {
+          res.status(401).jason({
+            status: 'fail',
+            message: 'forbidden from joining your own ride',
+          });
+        } else {
         // existing requests
-        const joinReqObj = JSON.parse(rideRes.rows[0].joinrequests);
-        const profile = { username: req.profile.profile.username };
-        if (joinReqObj.requests.includes(profile.username)
+          const joinReqObj = JSON.parse(rideRes.rows[0].joinrequests);
+          const profile = { username: req.profile.profile.username };
+          if (joinReqObj.requests.includes(profile.username)
         || joinReqObj.accepted.includes(profile.username)
         || joinReqObj.rejected.includes(profile.username)
-        ) {
-          res.status(400).json({
-            error: 'cant join this ride again',
-          });
-        } else { joinReqObj.requests.push(profile.username); }
-        // // make set entries unique
-        // const joinReqSet = new Set(joinReq);
-
-
-        const addRequest = rideModel.addRideRequest(rideId, JSON.stringify(joinReqObj));
-        addRequest.then(() => {
-          res.status(200).json({
-            message: 'success',
-          });
-        })
-          .catch((error) => {
-            log(error);
-            res.status(500).json({
-              error: 'unable to write request to db ',
+          ) {
+            res.status(400).json({
+              status: 'fail',
+              message: 'cant join this ride again',
             });
-          });
+          } else { joinReqObj.requests.push(profile.username); }
+
+
+          const addRequest = Ride.addRideRequest(rideId, JSON.stringify(joinReqObj));
+          addRequest.then(() => {
+            res.status(202).json({
+              status: 'success',
+              message: 'join ride requested successfully',
+            });
+          })
+            .catch(() => {
+              res.status(500).json({
+                status: 'error',
+                message: 'unable to write request to db ',
+              });
+            });
+        }
       })
-      .catch((error) => {
-        log(error);
-        res.status(400).json({
-          error: 'invalid user ',
+      .catch(() => {
+        res.status(500).json({
+          status: 'error',
+          message: 'internal database error ',
         });
       });
   }
@@ -101,59 +126,74 @@ class rideControllers {
     };
 
     if (!newRide.possibleStops) {
-      log('setting stopps ');
       newRide.possibleStops = [];
     }
 
     // return error if a field is missing
-    if (!newRide.boardingStop || !newRide.finalDestination || !newRide.rideTime
-     || !newRide.rideDate) {
-      res.status(400).json({
-        error: 'missing fields',
-      });
+    let missingFieldErrorMsg = '';
+    if (!newRide.boardingStop) {
+      missingFieldErrorMsg = 'boarding bus-stop missing';
+    } else if (!newRide.finalDestination) {
+      missingFieldErrorMsg = 'Destination missing';
+    } else if (!newRide.rideTime) {
+      missingFieldErrorMsg = 'departure time missing';
+    } else if (!newRide.rideDate) {
+      missingFieldErrorMsg = 'departure date missing';
     }
-
-    rideModel.createRide(newRide)
-      .then((result) => {
-        if (result.rowCount) {
-          res.status(200).json({
-            message: 'Sucess!',
-          });
-        }
-        res.status(500).json({
-          error: 'database error!',
-        });
-      })
-      .catch((error) => {
-        log(error);
-        res.status(500).json({
-          error: 'server error ',
-        });
+    if (missingFieldErrorMsg) {
+      res.status(400).json({
+        status: 'fail',
+        message: missingFieldErrorMsg,
       });
+    } else {
+      Ride.createRide(newRide)
+        .then((result) => {
+          if (result.rowCount) {
+            res.status(201).json({
+              status: 'success',
+              ride: newRide,
+            });
+          }
+          res.status(500).json({
+            status: 'error',
+            message: 'internal server error!',
+          });
+        })
+        .catch(() => {
+          res.status(500).json({
+            status: 'error',
+            message: 'internal database error ',
+          });
+        });
+    }
   }
 
   static getAllRequests(req, res) {
-    const rideId = parseInt(req.params.rideId, 10);
-    if (!rideId) {
-      res.status(400).json({
-        error: 'missing id field',
+    if (isNaN(req.params.rideId)) {
+      res.status(200).json({
+        status: 'fail',
+        message: 'non integer ride-id supplied',
       });
     } else {
-      rideModel.fetchRideOffer(rideId)
+      const rideId = parseInt(req.params.rideId, 10);
+      Ride.fetchRideOffer(rideId)
         .then((rideRes) => {
           if (!rideRes.rows[0]) {
             res.status(404).json({
-              error: 'ride offer not found',
+              status: 'fail',
+              message: 'ride not found',
             });
           } else if (parseInt(rideRes.rows[0].userid, 10)
           === parseInt(req.profile.profile.userId, 10)) {
+            const requests = JSON.parse(rideRes.rows[0].joinrequests);
             res.status(200).json({
               message: 'success',
-              requests: JSON.parse(rideRes.rows[0].joinrequests),
+              requests,
             });
           } else {
             res.status(400).json({
-              error: 'can only view join requests for your ride offer!!',
+              status: 'fail',
+              message: 'forbidden from accessing this riderequests!!',
             });
           }
         });
@@ -163,69 +203,97 @@ class rideControllers {
 
   static respondToJoinRequests(req, res) {
     let responsMessage;
-    const rideId = parseInt(req.params.rideId, 10);
-    const joinRequestId = parseInt(req.params.requestId, 10);
-    if (req.body.accept === undefined) {
+    if (Number.isNaN(req.params.rideId)) {
       res.status(400).json({
         status: 'fail',
-        message: 'accept parameter not suplied',
+        message: 'non integer ride id parameter',
       });
     } else {
-      const accepted = parseInt(req.body.accept, 10); // 1 or 0
-
-      if (!rideId || !joinRequestId) {
-        log(joinRequestId);
+      const rideId = parseInt(req.params.rideId, 10);
+      const joinRequestId = parseInt(req.params.requestId, 10);
+      if (req.body.accept === undefined) {
         res.status(400).json({
-          error: 'missing id field',
+          status: 'fail',
+          message: 'missing accept parameter',
+        });
+      } else if (Number.isNaN(req.body.accept)) {
+        res.status(400).json({
+          status: 'fail',
+          message: 'non integer accept value',
         });
       } else {
-        rideModel.fetchRideOffer(rideId)
-          .then((rideRes) => {
-            if (!rideRes.rows[0]) {
-              res.status(404).json({
-                error: 'invalid ride',
-              });
-            } else if (parseInt(rideRes.rows[0].userid, 10)
-          === parseInt(req.profile.profile.userId, 10)) {
-              const joinrequests = JSON.parse(rideRes.rows[0].joinrequests);
+        const accepted = parseInt(req.body.accept, 10); // 1 or 0
 
-              if (parseInt(joinrequests.requests.length, 10) === 0) {
-                res.status(400).json({
-                  status: 'fail',
-                  message: 'you dont have join requests',
-                });
-              } else if (joinRequestId > joinrequests.requests.length || joinRequestId < 1) {
-                res.status(400).json({
-                  status: 'fail',
-                  message: 'valid ride offer id required',
-                });
-              } else {
-                const index = joinRequestId - 1;
-
-                if (accepted) {
-                  joinrequests.accepted.push(joinrequests.accepted[index]);
-                  responsMessage = 'request accepted';
-                } else {
-                  joinrequests.rejected.push(joinrequests.requests[index]);
-                  responsMessage = 'request rejected';
-                }
-
-                joinrequests.requests.splice(index, 1);
-
-                rideModel.addRideRequest(rideId, joinrequests)
-                  .then(() => {
-                    res.status(200).json({
-                      status: 'success',
-                      responsMessage,
-                    });
-                  });
-              }
-            } else {
-              res.status(400).json({
-                error: 'forbidden !!',
-              });
-            }
+        if (!rideId) {
+          res.status(400).json({
+            status: 'fail',
+            message: 'missing ride id field',
           });
+        } else if (!joinRequestId) {
+          res.status(400).json({
+            status: 'fail',
+            message: 'missing request id field',
+          });
+        } else {
+          Ride.fetchRideOffer(rideId)
+            .then((rideRes) => {
+              if (!rideRes.rows[0]) {
+                res.status(404).json({
+                  status: 'fail',
+                  message: 'ride not found',
+                });
+              } else if (parseInt(rideRes.rows[0].userid, 10)
+          === parseInt(req.profile.profile.userId, 10)) {
+                const joinrequests = JSON.parse(rideRes.rows[0].joinrequests);
+
+                if (parseInt(joinrequests.requests.length, 10) === 0) {
+                  res.status(400).json({
+                    status: 'fail',
+                    message: 'you dont have join requests',
+                  });
+                } else if (joinRequestId > joinrequests.requests.length || joinRequestId < 1) {
+                  res.status(400).json({
+                    status: 'fail',
+                    message: 'valid ride offer id required',
+                  });
+                } else {
+                  const index = joinRequestId - 1;
+
+                  if (accepted) {
+                    joinrequests.accepted.push(joinrequests.accepted[index]);
+                    responsMessage = 'request accepted successfully';
+                  } else {
+                    joinrequests.rejected.push(joinrequests.requests[index]);
+                    responsMessage = 'request rejected successfully';
+                  }
+
+                  joinrequests.requests.splice(index, 1);
+
+                  Ride.addRideRequest(rideId, joinrequests)
+                    .then(() => {
+                      res.status(200).json({
+                        status: 'success',
+                        message: responsMessage,
+                      });
+                    })
+                    .catch(() => {
+                      res.status(500).json({
+                        status: 'error',
+                        message: 'database error',
+                      });
+                    });
+                }
+              } else {
+                res.status(403).json({
+                  status: 'fail',
+                  message: 'forbidden from accessing this ride!!',
+                });
+              }
+            })
+            .catch(() => {
+
+            });
+        }
       }
     }
   }
