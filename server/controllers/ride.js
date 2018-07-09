@@ -65,8 +65,8 @@ class rideControllers {
             status: 'fail',
             message: 'ride not found',
           });
-        } else if (parseInt(rideRes.rows[0].userid, 10) === req.profile.profile.userId) {
-          res.status(401).jason({
+        } else if (parseInt(rideRes.rows[0].userid, 10) === parseInt(req.profile.profile.userId, 10)) {
+          res.status(401).json({
             status: 'fail',
             message: 'forbidden from joining your own ride',
           });
@@ -169,7 +169,7 @@ class rideControllers {
   }
 
   static getAllRequests(req, res) {
-    if (isNaN(req.params.rideId)) {
+    if (Number.isNaN(req.params.rideId)) {
       res.status(200).json({
         status: 'fail',
         message: 'non integer ride-id supplied',
@@ -260,7 +260,7 @@ class rideControllers {
                   const index = joinRequestId - 1;
 
                   if (accepted) {
-                    joinrequests.accepted.push(joinrequests.accepted[index]);
+                    joinrequests.accepted.push(joinrequests.requests[index]);
                     responsMessage = 'request accepted successfully';
                   } else {
                     joinrequests.rejected.push(joinrequests.requests[index]);
