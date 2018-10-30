@@ -1,7 +1,7 @@
 import Ride from '../models/ride';
 
 class rideControllers {
-// returns all rides offers
+  // returns all rides offers
   static getAllRides(req, res) {
     Ride.fetchRideOffers()
       .then(data => res.status(200).json({
@@ -9,7 +9,7 @@ class rideControllers {
         message: 'data retrieved',
         rides: data.rows,
       }))
-      . catch(() => {
+      .catch(() => {
         res.status(500).json({
           status: 'error',
           message: 'database server error',
@@ -71,12 +71,12 @@ class rideControllers {
             message: 'forbidden from joining your own ride',
           });
         } else {
-        // existing requests
+          // existing requests
           const joinReqObj = JSON.parse(rideRes.rows[0].joinrequests);
           const profile = { username: req.profile.profile.username };
           if (joinReqObj.requests.includes(profile.username)
-        || joinReqObj.accepted.includes(profile.username)
-        || joinReqObj.rejected.includes(profile.username)
+            || joinReqObj.accepted.includes(profile.username)
+            || joinReqObj.rejected.includes(profile.username)
           ) {
             res.status(400).json({
               status: 'fail',
@@ -127,7 +127,10 @@ class rideControllers {
 
     if (!newRide.possibleStops) {
       newRide.possibleStops = [];
+    } else {
+      newRide.possibleStops = JSON.stringify(newRide.possibleStops.split(','))
     }
+    console.log(newRide)
 
     // return error if a field is missing
     let missingFieldErrorMsg = '';
@@ -184,7 +187,7 @@ class rideControllers {
               message: 'ride not found',
             });
           } else if (parseInt(rideRes.rows[0].userid, 10)
-          === parseInt(req.profile.profile.userId, 10)) {
+            === parseInt(req.profile.profile.userId, 10)) {
             const requests = JSON.parse(rideRes.rows[0].joinrequests);
             res.status(200).json({
               message: 'success',
@@ -243,7 +246,7 @@ class rideControllers {
                   message: 'ride not found',
                 });
               } else if (parseInt(rideRes.rows[0].userid, 10)
-          === parseInt(req.profile.profile.userId, 10)) {
+                === parseInt(req.profile.profile.userId, 10)) {
                 const joinrequests = JSON.parse(rideRes.rows[0].joinrequests);
 
                 if (parseInt(joinrequests.requests.length, 10) === 0) {

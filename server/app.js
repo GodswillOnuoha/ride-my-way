@@ -3,8 +3,10 @@ import bodyParser from 'body-parser';
 import Ride from './routes/ride';
 import Auth from './routes/auth';
 import User from './routes/user';
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
