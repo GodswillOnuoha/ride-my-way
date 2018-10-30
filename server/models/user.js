@@ -28,7 +28,7 @@ class User {
     const query = {
       text: 'INSERT INTO users(firstName, lastName, username, email, password, datecreated) VALUES ($1, $2, $3, $4, $5, $6)',
       values: [user.firstName, user.lastName, user.username,
-        user.email, user.password, user.datecreated],
+      user.email, user.password, user.datecreated],
     };
     const res = db.query(query);
     return res;

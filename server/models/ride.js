@@ -33,8 +33,8 @@ const createRide = (ride) => {
   const query = {
     text: 'INSERT INTO rideOffer (boardingStop, finalDestination, rideTime, rideDate, possibleStops, vehicleType, joinRequests, userId) VALUES($1, $2,$3,$4,$5,$6,$7,$8)',
     values: [ride.boardingStop, ride.finalDestination, ride.rideTime,
-      ride.rideDate, ride.possibleStops, ride.vehicleType,
-      ride.joinRequests, ride.userId],
+    ride.rideDate, ride.possibleStops, ride.vehicleType,
+    ride.joinRequests, ride.userId],
   };
 
   const res = db.query(query);
