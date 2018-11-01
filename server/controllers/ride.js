@@ -126,11 +126,10 @@ class rideControllers {
     };
 
     if (!newRide.possibleStops) {
-      newRide.possibleStops = [];
+      newRide.possibleStops = JSON.stringify([]);
     } else {
       newRide.possibleStops = JSON.stringify(newRide.possibleStops.split(','))
     }
-    console.log(newRide)
 
     // return error if a field is missing
     let missingFieldErrorMsg = '';
