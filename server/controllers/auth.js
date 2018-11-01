@@ -91,6 +91,10 @@ class Auth {
                         .then((result) => {
                           const userid = result.rows[0].userid
                           const rUsername = result.rows[0].username
+                          const profile = {
+                            userId: userid,
+                            username: rUsername,
+                          };
                           res.status(201).json({
                             status: 'success',
                             message: 'account created',
@@ -100,7 +104,7 @@ class Auth {
                               lastname: newUser.lastname,
                               username: newUser.username,
                               email: newUser.email,
-                              token: jwt.sign({ userid, username: rUsername }, process.env.JWT_SECRET_TOKEN, { expiresIn: '24h' })
+                              token: jwt.sign({ profile }, process.env.JWT_SECRET_TOKEN, { expiresIn: '24h' })
                             }
                           });
                         })
